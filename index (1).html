@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SKY CAFFEE | المنيو</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Marhey:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f4ecd8;
+    --cream-2:#efe4c9;
+    --cream-deep:#e9dcb9;
+    --gold:#c9a24b;
+    --gold-bright:#e8c874;
+    --gold-dark:#8a6a24;
+    --ink:#2c2013;
+    --ink-soft:#5c4a30;
+    --charcoal:#161311;
+    --charcoal-2:#221c17;
+    --shadow: 0 10px 30px rgba(44,32,19,.18);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Tajawal', sans-serif;
+    background:
+      radial-gradient(circle at 15% 0%, rgba(201,162,75,.10), transparent 40%),
+      radial-gradient(circle at 100% 20%, rgba(201,162,75,.12), transparent 45%),
+      linear-gradient(180deg, var(--cream) 0%, var(--cream-2) 100%);
+    color:var(--ink);
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(201,162,75,.035) 0px, rgba(201,162,75,.035) 1px, transparent 1px, transparent 26px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    position:relative;
+    background: radial-gradient(120% 140% at 50% -10%, #2a231b 0%, var(--charcoal) 55%, #0f0d0b 100%);
+    padding:26px 18px 60px;
+    text-align:center;
+    border-bottom:4px solid var(--gold);
+    box-shadow: var(--shadow);
+  }
+  .social-bar{
+    display:flex; justify-content:center; align-items:center; gap:18px;
+    margin-bottom:18px;
+  }
+  .social-bar a{
+    width:38px; height:38px;
+    display:flex; align-items:center; justify-content:center;
+    border-radius:50%;
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    box-shadow:0 0 14px rgba(232,200,116,.55), inset 0 0 6px rgba(255,255,255,.35);
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .social-bar a:hover{ transform:translateY(-3px) scale(1.08); box-shadow:0 0 22px rgba(232,200,116,.85); }
+  .social-bar svg{ width:19px; height:19px; fill:#1c1509; }
+
+  .brand-wrap{
+    position:relative;
+    max-width:520px; margin:0 auto;
+    padding:18px 10px 6px;
+  }
+  .wings{ position:absolute; top:8px; left:50%; transform:translateX(-50%); width:100%; max-width:480px; height:auto; opacity:.95; filter:drop-shadow(0 0 10px rgba(232,200,116,.35)); z-index:0;}
+  .wings path{ fill:#d9d2c0; }
+  .brand-title{
+    position:relative; z-index:1;
+    font-family:'Marhey', cursive;
+    font-weight:700;
+    font-size:clamp(42px, 11vw, 64px);
+    letter-spacing:2px;
+    background:linear-gradient(180deg,#f3d98a 0%, #c9a24b 45%, #8a6a24 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    text-shadow:0 0 26px rgba(232,200,116,.35);
+    padding-top:70px;
+  }
+  .brand-sub{
+    position:relative; z-index:1;
+    color:var(--gold-bright);
+    letter-spacing:6px;
+    font-size:12px;
+    margin-top:6px;
+    text-transform:uppercase;
+  }
+  .brand-tag{
+    position:relative; z-index:1;
+    color:#cbbfa2; font-size:14px; margin-top:14px; line-height:1.9;
+    max-width:360px; margin-inline:auto;
+  }
+
+  /* ===== NAV ===== */
+  .nav-wrap{
+    position:sticky; top:0; z-index:40;
+    background:linear-gradient(180deg, var(--cream) 60%, rgba(244,236,216,.85));
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(138,106,36,.35);
+    padding:10px 0;
+  }
+  .nav-scroll{
+    display:flex; gap:10px; overflow-x:auto; padding:4px 16px;
+    scrollbar-width:none;
+  }
+  .nav-scroll::-webkit-scrollbar{ display:none; }
+  .nav-btn{
+    flex:0 0 auto;
+    padding:10px 18px;
+    border-radius:30px;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    color:var(--ink-soft);
+    font-family:'Tajawal', sans-serif;
+    font-weight:700;
+    font-size:14px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:all .25s ease;
+  }
+  .nav-btn.active, .nav-btn:hover{
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    color:#221909;
+    box-shadow:0 4px 14px rgba(138,106,36,.35);
+    border-color:transparent;
+  }
+
+  /* ===== SECTIONS ===== */
+  .container{ max-width:1180px; margin:0 auto; padding:34px 16px 90px; position:relative; z-index:1;}
+  .section{ display:none; animation:fadeIn .5s ease; }
+  .section.active{ display:block; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-head{
+    text-align:center; margin-bottom:34px;
+  }
+  .section-head h2{
+    font-family:'Marhey', cursive;
+    font-size:clamp(28px,5vw,40px);
+    color:var(--gold-dark);
+    display:inline-block;
+    position:relative;
+    padding:0 20px;
+  }
+  .section-head h2::before, .section-head h2::after{
+    content:"◆";
+    color:var(--gold);
+    font-size:14px;
+    position:relative; top:-4px;
+    margin:0 14px;
+  }
+  .section-head p{ color:var(--ink-soft); margin-top:10px; font-size:14px; }
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
+    gap:22px;
+  }
+
+  .card{
+    background:linear-gradient(180deg, #fffdf6, var(--cream-2));
+    border:1px solid rgba(138,106,36,.35);
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow: var(--shadow);
+    transition:transform .3s ease, box-shadow .3s ease;
+    position:relative;
+  }
+  .card:hover{ transform:translateY(-6px); box-shadow:0 16px 34px rgba(44,32,19,.28); }
+  .card .img-wrap{
+    position:relative; height:160px; overflow:hidden;
+  }
+  .card img{
+    width:100%; height:100%; object-fit:cover;
+    transition:transform .5s ease;
+  }
+  .card:hover img{ transform:scale(1.08); }
+  .card .img-wrap::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(22,17,11,.55));
+  }
+  .price-tag{
+    position:absolute; bottom:8px; left:10px; z-index:2;
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    color:#221909; font-weight:700; font-size:13px;
+    padding:5px 12px; border-radius:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
+  }
+  .card-body{ padding:14px 16px 18px; text-align:center; }
+  .card-body h3{ font-size:16px; color:var(--ink); font-weight:700; }
+
+  .badge-signature{
+    position:absolute; top:8px; right:8px; z-index:2;
+    background:var(--charcoal); color:var(--gold-bright);
+    font-size:10px; padding:4px 9px; border-radius:12px;
+    letter-spacing:1px; border:1px solid var(--gold);
+  }
+
+  footer{
+    text-align:center; padding:30px 16px 40px;
+    color:var(--ink-soft); font-size:13px;
+    border-top:1px solid rgba(138,106,36,.35);
+    background:var(--cream-2);
+    position:relative; z-index:1;
+  }
+  footer .foot-title{ color:var(--gold-dark); font-weight:900; font-size:15px; margin-bottom:6px;}
+
+  /* ===== ADMIN FAB ===== */
+  .admin-fab{
+    position:fixed; bottom:20px; left:20px; z-index:100;
+    width:52px; height:52px; border-radius:50%;
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
+    cursor:pointer; border:2px solid #fff8e6;
+    transition:transform .3s ease;
+  }
+  .admin-fab:hover{ transform:rotate(90deg) scale(1.05); }
+  .admin-fab svg{ width:24px; height:24px; fill:#241c0c; }
+
+  /* ===== MODAL ===== */
+  .modal-overlay{
+    position:fixed; inset:0; background:rgba(15,12,8,.72);
+    display:none; align-items:center; justify-content:center; z-index:200; padding:16px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal{
+    background:var(--cream); border:1px solid var(--gold);
+    border-radius:18px; max-width:560px; width:100%;
+    max-height:88vh; overflow-y:auto;
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+    padding:24px;
+    position:relative;
+  }
+  .modal h3{ font-family:'Marhey',cursive; color:var(--gold-dark); font-size:22px; margin-bottom:16px; text-align:center;}
+  .modal-close{
+    position:absolute; top:14px; left:14px;
+    width:30px; height:30px; border-radius:50%;
+    background:var(--charcoal); color:var(--gold-bright);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; font-size:16px; border:none;
+  }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:13px; color:var(--ink-soft); margin-bottom:6px; font-weight:700;}
+  .field input, .field select{
+    width:100%; padding:11px 12px; border-radius:10px;
+    border:1.5px solid rgba(138,106,36,.4); background:#fffdf6;
+    font-family:'Tajawal',sans-serif; font-size:14px; color:var(--ink);
+  }
+  .field input:focus, .field select:focus{ outline:none; border-color:var(--gold); }
+  .btn{
+    width:100%; padding:12px; border-radius:10px; border:none;
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    color:#221909; font-weight:900; font-size:15px; cursor:pointer;
+    transition:transform .2s ease;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-danger{ background:linear-gradient(160deg,#e08a6f,#a1402a); color:#fff5ee;}
+  .btn-ghost{ background:transparent; border:1.5px solid var(--gold-dark); color:var(--gold-dark); }
+
+  .admin-item-row{
+    display:flex; align-items:center; gap:10px;
+    background:#fffdf6; border:1px solid rgba(138,106,36,.3);
+    border-radius:12px; padding:10px 12px; margin-bottom:8px;
+  }
+  .admin-item-row img{ width:44px; height:44px; border-radius:8px; object-fit:cover; flex:0 0 auto;}
+  .admin-item-row .name{ flex:1; font-size:14px; font-weight:700; }
+  .admin-item-row input{
+    width:110px; padding:7px 8px; border-radius:8px;
+    border:1px solid rgba(138,106,36,.4); font-size:13px; text-align:center;
+  }
+  .admin-item-row .del-btn{
+    width:30px; height:30px; border-radius:8px; border:none;
+    background:#a1402a; color:#fff; cursor:pointer; flex:0 0 auto; font-size:14px;
+  }
+  .admin-cat-title{
+    font-weight:900; color:var(--gold-dark); margin:18px 0 8px; font-size:15px;
+    border-bottom:1px dashed var(--gold); padding-bottom:6px;
+  }
+  .toast{
+    position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--charcoal); color:var(--gold-bright);
+    padding:12px 22px; border-radius:30px; font-size:14px; font-weight:700;
+    border:1px solid var(--gold); opacity:0; pointer-events:none;
+    transition:all .35s ease; z-index:300;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  @media(max-width:480px){
+    .grid{ grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px;}
+    .card .img-wrap{ height:120px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+  <div class="social-bar">
+    <a href="https://www.instagram.com/skycaffee2026?igsh=NWEwNmRzY2d6Zjd0" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.25.07 1.63.07 4.81 0 3.19-.01 3.57-.07 4.81-.15 3.23-1.66 4.77-4.92 4.92-1.25.06-1.63.07-4.85.07-3.2 0-3.58-.01-4.83-.07-3.26-.15-4.77-1.7-4.92-4.92-.06-1.25-.07-1.62-.07-4.81 0-3.18.02-3.56.07-4.81.15-3.23 1.67-4.77 4.92-4.92C8.42 2.2 8.8 2.2 12 2.2zm0 1.8c-3.14 0-3.5.01-4.74.07-2.36.1-3.44 1.2-3.54 3.54C3.66 8.85 3.65 9.2 3.65 12s.01 3.15.07 4.39c.1 2.34 1.18 3.44 3.54 3.54 1.24.06 1.6.07 4.74.07s3.5-.01 4.74-.07c2.35-.1 3.44-1.19 3.54-3.54.06-1.24.07-1.59.07-4.39s-.01-3.15-.07-4.39c-.1-2.34-1.19-3.44-3.54-3.54C15.5 4.01 15.14 4 12 4zm0 3.65a4.35 4.35 0 110 8.7 4.35 4.35 0 010-8.7zm0 1.8a2.55 2.55 0 100 5.1 2.55 2.55 0 000-5.1zm4.55-2a1.02 1.02 0 110 2.04 1.02 1.02 0 010-2.04z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/skycaffee2026" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg viewBox="0 0 24 24"><path d="M13.5 22v-8.4h2.8l.42-3.27h-3.22V8.2c0-.95.26-1.6 1.63-1.6h1.74V3.66C16.55 3.61 15.55 3.5 14.38 3.5c-2.44 0-4.11 1.49-4.11 4.22v2.61H7.46v3.27h2.81V22h3.23z"/></svg>
+    </a>
+  </div>
+
+  <div class="brand-wrap">
+    <svg class="wings" viewBox="0 0 600 220" xmlns="http://www.w3.org/2000/svg">
+      <g id="wingL">
+        <path d="M270 210 C 220 190, 170 175, 140 150 C 110 125, 95 95, 80 60 C 68 33, 55 15, 30 0 C 55 8, 78 18, 98 35 C 100 15, 95 -5, 85 -20 C 108 -8, 122 12, 128 35 C 135 15, 133 -8, 122 -25 C 148 -12, 160 12, 162 38 C 172 20, 172 -3, 163 -22 C 188 -8, 198 18, 195 45 C 203 30, 205 8, 198 -12 C 220 4, 226 30, 218 55 C 224 42, 228 22, 224 3 C 244 22, 246 48, 234 68 C 246 90, 252 118, 246 145 C 240 168, 226 188, 270 210 Z"/>
+      </g>
+      <g id="wingR" transform="translate(600,0) scale(-1,1)">
+        <path d="M270 210 C 220 190, 170 175, 140 150 C 110 125, 95 95, 80 60 C 68 33, 55 15, 30 0 C 55 8, 78 18, 98 35 C 100 15, 95 -5, 85 -20 C 108 -8, 122 12, 128 35 C 135 15, 133 -8, 122 -25 C 148 -12, 160 12, 162 38 C 172 20, 172 -3, 163 -22 C 188 -8, 198 18, 195 45 C 203 30, 205 8, 198 -12 C 220 4, 226 30, 218 55 C 224 42, 228 22, 224 3 C 244 22, 246 48, 234 68 C 246 90, 252 118, 246 145 C 240 168, 226 188, 270 210 Z"/>
+      </g>
+    </svg>
+    <h1 class="brand-title">SKY CAFFEE</h1>
+    <div class="brand-sub">Since the sky is the only limit</div>
+    <p class="brand-tag">أجواء فاخرة، ونكهات تُحلّق بذوقك. اكتشف قائمتنا الكاملة من الحلويات، المشروبات، العصائر والأراكيل.</p>
+  </div>
+</div>
+
+<!-- ===== NAV ===== -->
+<div class="nav-wrap">
+  <div class="nav-scroll" id="navScroll"></div>
+</div>
+
+<div class="container" id="menuContainer"></div>
+
+<footer>
+  <div class="foot-title">SKY CAFFEE</div>
+  تلبية كافة الخدمات من أعياد ميلاد وخطبة ومناسبات خاصة 🎉<br>
+  © 2026 SKY CAFFEE — جميع الحقوق محفوظة
+</footer>
+
+<!-- ===== ADMIN FAB ===== -->
+<div class="admin-fab" id="adminFab" title="لوحة تحكم المالك">
+  <svg viewBox="0 0 24 24"><path d="M19.14 12.94a7.14 7.14 0 000-1.88l2.03-1.58a.5.5 0 00.12-.64l-1.92-3.32a.5.5 0 00-.6-.22l-2.39.96a7.03 7.03 0 00-1.62-.94l-.36-2.54a.5.5 0 00-.5-.42h-3.84a.5.5 0 00-.5.42l-.36 2.54c-.59.24-1.13.56-1.62.94l-2.39-.96a.5.5 0 00-.6.22L2.71 8.84a.5.5 0 00.12.64l2.03 1.58a7.14 7.14 0 000 1.88l-2.03 1.58a.5.5 0 00-.12.64l1.92 3.32c.14.24.42.32.6.22l2.39-.96c.49.38 1.03.7 1.62.94l.36 2.54c.05.25.26.42.5.42h3.84c.24 0 .45-.17.5-.42l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.24.1.5 0 .6-.22l1.92-3.32a.5.5 0 00-.12-.64l-2.03-1.58zM12 15.5A3.5 3.5 0 1112 8.5a3.5 3.5 0 010 7z"/></svg>
+</div>
+
+<!-- ===== PASSWORD MODAL ===== -->
+<div class="modal-overlay" id="pwModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('pwModal')">✕</button>
+    <h3>دخول لوحة التحكم</h3>
+    <div class="field">
+      <label>كلمة السر</label>
+      <input type="password" id="pwInput" placeholder="أدخل كلمة السر" autocomplete="off">
+    </div>
+    <button class="btn" onclick="checkPassword()">دخول</button>
+  </div>
+</div>
+
+<!-- ===== ADMIN MODAL ===== -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal" style="max-width:640px;">
+    <button class="modal-close" onclick="closeModal('adminModal')">✕</button>
+    <h3>لوحة تحكم صاحب المقهى</h3>
+
+    <div class="admin-cat-title">➕ إضافة صنف جديد</div>
+    <div class="field">
+      <label>القسم</label>
+      <select id="newCat"></select>
+    </div>
+    <div class="field">
+      <label>اسم الصنف</label>
+      <input type="text" id="newName" placeholder="مثال: عصير مانجا">
+    </div>
+    <div class="field">
+      <label>السعر (ل.س)</label>
+      <input type="number" id="newPrice" placeholder="مثال: 25000">
+    </div>
+    <div class="field">
+      <label>📷 رفع صورة من جهازك (اختياري)</label>
+      <input type="file" id="newImgFile" accept="image/*">
+      <div id="newImgPreviewWrap" style="margin-top:8px; display:none;">
+        <img id="newImgPreview" style="width:100%; max-height:160px; object-fit:cover; border-radius:10px; border:1px solid rgba(138,106,36,.4);">
+      </div>
+    </div>
+    <div class="field">
+      <label>أو كلمة بحث لصورة تلقائية (إذا لم ترفع صورة)</label>
+      <input type="text" id="newImgKey" placeholder="مثال: mango juice">
+    </div>
+    <button class="btn" onclick="addItem()">إضافة الصنف</button>
+    <div id="dbStatus" style="text-align:center; font-size:12px; margin-top:10px; color:var(--ink-soft);"></div>
+
+    <div id="adminList" style="margin-top:22px;"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================================
+   قاعدة بيانات حقيقية (Firebase Firestore) — مشتركة بين كل الزبائن
+   ==========================================================================
+   لتفعيل التخزين الحقيقي (بحيث تظهر تعديلاتك فوراً لكل الزبائن على أي جهاز):
+   1) اذهب إلى https://console.firebase.google.com وأنشئ مشروعاً مجانياً (Add project).
+   2) داخل المشروع: Build > Firestore Database > Create database (ابدأ في وضع test mode).
+   3) اذهب إلى Project settings > عام > "إضافة تطبيق" واختر أيقونة الويب </>.
+   4) انسخ القيم الظاهرة (apiKey, authDomain, projectId ...) والصقها مكان
+      القيم أدناه في firebaseConfig.
+   5) احفظ الملف وأعد فتحه — سيعمل تلقائياً على قاعدة بيانات حقيقية.
+   طالما لم تُملأ القيم، سيعمل الموقع بتخزين محلي (LocalStorage) على هذا
+   الجهاز فقط — والموقع يعمل بشكل كامل وطبيعي في كل الحالات.
+   ========================================================================== */
+const firebaseConfig = {
+  apiKey: "AIzaSyCD0H5fbuxkRODjjGDP699WkAPC3NDJs88",
+  authDomain: "sky-7ab8e.firebaseapp.com",
+  projectId: "sky-7ab8e",
+  storageBucket: "sky-7ab8e.firebasestorage.app",
+  messagingSenderId: "533353306910",
+  appId: "1:533353306910:web:d3edb1eb8bf1c204a3470f"
+};
+const FIREBASE_CONFIGURED = firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
+
+let db = null;
+let firestoreFns = null;
+let menuColRef = null;
+
+/* ============ DATA ============ */
+const STORAGE_KEY = "skyCaffeeMenuV1";
+const ADMIN_PASSWORD = "123456";
+
+function img(keyword, lock){
+  return `https://loremflickr.com/400/300/${encodeURIComponent(keyword)}?lock=${lock}`;
+}
+
+const defaultData = [
+  { id:"sweets", name:"الحلويات", icon:"🍰", items:[
+    { name:"براونيز كيك", price:30000, img: img("brownie,cake",101) },
+    { name:"فوندان", price:35000, img: img("chocolate,fondant,cake",102) },
+    { name:"تشيز كيك", price:35000, img: img("cheesecake",103) },
+    { name:"تشيز كيك نوتيلا", price:40000, img: img("nutella,cheesecake",104) },
+    { name:"تشيز كيك لوتس", price:40000, img: img("lotus,biscoff,cheesecake",105) },
+    { name:"تشيز كيك فريز", price:38000, img: img("strawberry,cheesecake",106) },
+    { name:"تشيز كيك توت", price:38000, img: img("berry,cheesecake",107) },
+  ]},
+  { id:"hot", name:"المشروبات الساخنة", icon:"☕", items:[
+    { name:"قهوة", price:15000, img: img("arabic,coffee,cup",201) },
+    { name:"شاي", price:8000, img: img("tea,glass",202) },
+    { name:"متة", price:10000, img: img("mate,tea",203) },
+    { name:"ميلو", price:20000, img: img("chocolate,milo,drink",204) },
+    { name:"شاي 1×3", price:12000, img: img("tea,spices",205) },
+    { name:"شاي 1×2", price:10000, img: img("tea,herbal",206) },
+    { name:"هوت شوكليت", price:25000, img: img("hot,chocolate",207) },
+    { name:"شاي منكهة", price:12000, img: img("flavored,tea",208) },
+    { name:"زهورات", price:10000, img: img("floral,herbal,tea",209) },
+    { name:"كمون", price:10000, img: img("cumin,drink",210) },
+    { name:"نسكافيه بلاك", price:20000, img: img("black,coffee",211) },
+    { name:"نسكافيه بالحليب", price:22000, img: img("latte,coffee,milk",212) },
+  ]},
+  { id:"cold", name:"المشروبات الباردة", icon:"🥤", items:[
+    { name:"بيبسي", price:12000, img: img("pepsi,soda,cola",301) },
+    { name:"سفن أب", price:12000, img: img("seven,up,soda",302) },
+    { name:"دايت", price:12000, img: img("diet,soda,can",303) },
+    { name:"طاقة", price:18000, img: img("energy,drink,can",304) },
+    { name:"ميكس بيري", price:30000, img: img("mixed,berries,drink",305) },
+    { name:"ميكس سوار", price:30000, img: img("mocktail,fruit,mix",306) },
+  ]},
+  { id:"juice", name:"عصائر", icon:"🍹", items:[
+    { name:"عصير بولو", price:25000, img: img("passion,fruit,juice",401) },
+    { name:"عصير أناناس", price:25000, img: img("pineapple,juice",402) },
+    { name:"عصير مانجا", price:25000, img: img("mango,juice",403) },
+    { name:"عصير توت", price:25000, img: img("berry,juice",404) },
+    { name:"عصير برتقال", price:20000, img: img("orange,juice",405) },
+    { name:"عصير فريز", price:25000, img: img("strawberry,juice",406) },
+    { name:"عصائر موسمية", price:25000, img: img("fresh,fruit,juice",407) },
+    { name:"عصير رمان", price:30000, img: img("pomegranate,juice",408) },
+    { name:"ليموناضة", price:20000, img: img("lemonade",409) },
+  ]},
+  { id:"fruitsalad", name:"سلطات فواكه", icon:"🍓", items:[
+    { name:"سلطة فواكه موسمية", price:40000, img: img("fruit,salad,bowl",501) },
+    { name:"سلطة نوتيلا", price:45000, img: img("nutella,fruit,dessert",502) },
+    { name:"سلطة كورن فلكس", price:40000, img: img("cornflakes,fruit,dessert",503) },
+  ]},
+  { id:"iced", name:"الأيسات", icon:"🍨", items:[
+    { name:"أيس ميلو", price:30000, img: img("iced,chocolate,drink",601) },
+    { name:"أيس 1×2", price:30000, img: img("iced,tea,drink",602) },
+    { name:"أيس 1×3", price:30000, img: img("iced,herbal,drink",603) },
+    { name:"أيس شوكليت", price:32000, img: img("iced,chocolate,frappe",604) },
+    { name:"أيس كوفي", price:32000, img: img("iced,coffee",605) },
+    { name:"أيس تي دراق", price:30000, img: img("iced,peach,tea",606) },
+  ]},
+  { id:"cocktail", name:"كوكتيلات", icon:"🍧", items:[
+    { name:"موز . حليب", price:30000, img: img("banana,milkshake",701) },
+    { name:"موز . حليب . فريز", price:35000, img: img("banana,strawberry,smoothie",702) },
+    { name:"موز . حليب . شوكولا", price:35000, img: img("banana,chocolate,smoothie",703) },
+    { name:"موز . حليب عسل", price:35000, img: img("banana,honey,smoothie",704) },
+    { name:"أفوكادو مع مكسرات", price:45000, img: img("avocado,smoothie,nuts",705) },
+    { name:"سبيشل فواكه", price:45000, img: img("special,fruit,smoothie",706) },
+    { name:"رمان . موز", price:35000, img: img("pomegranate,banana,smoothie",707) },
+    { name:"منغا . فريز", price:35000, img: img("mango,strawberry,smoothie",708) },
+  ]},
+  { id:"milkshake", name:"ميلك شيك", icon:"🥛", items:[
+    { name:"أوريو", price:35000, img: img("oreo,milkshake",801) },
+    { name:"فريز", price:35000, img: img("strawberry,milkshake",802) },
+    { name:"شوكولا أوريو", price:38000, img: img("chocolate,oreo,milkshake",803) },
+    { name:"تشيز كيك", price:40000, img: img("cheesecake,milkshake",804) },
+    { name:"ميلك شيك ميكس (بسكوت أجنبي)", price:40000, img: img("cookies,milkshake",805) },
+    { name:"ميلك شيك فينيل", price:32000, img: img("vanilla,milkshake",806) },
+  ]},
+  { id:"hookah", name:"الأراكيل", icon:"💨", items:[
+    { name:"سكاي (سيغنتشر)", price:35000, img: img("gold,luxury,hookah",901), signature:true },
+    { name:"فاخر", price:30000, img: img("premium,hookah,shisha",902) },
+    { name:"تفاحتين نخلة", price:25000, img: img("apple,hookah,shisha",903) },
+    { name:"تفاحة", price:25000, img: img("green,apple,hookah",904) },
+    { name:"عنب", price:25000, img: img("grape,hookah,shisha",905) },
+    { name:"بولو", price:25000, img: img("fruit,hookah,shisha",906) },
+    { name:"لوف", price:25000, img: img("love,hookah,shisha,red",907) },
+    { name:"علكة", price:25000, img: img("bubblegum,hookah,shisha",908) },
+  ]},
+];
+
+function loadLocal(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw) return JSON.parse(raw);
+  }catch(e){
+    console.warn("التخزين المحلي غير متاح بهذا المتصفح، سيعمل الموقع بدون حفظ دائم:", e);
+  }
+  return structuredClone(defaultData);
+}
+function saveLocal(data){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }catch(e){
+    console.warn("تعذّر الحفظ محلياً بهذا المتصفح:", e);
+  }
+}
+
+/* يحفظ فئة واحدة فقط في مستند خاص فيها — بحيث لا يتجاوز أي مستند حد 1MB في Firestore */
+async function writeCategory(cat){
+  await firestoreFns.setDoc(
+    firestoreFns.doc(menuColRef, cat.id),
+    { name: cat.name, icon: cat.icon, items: cat.items, updatedAt: Date.now() }
+  );
+}
+async function writeAllCategories(data){
+  for(const cat of data){ await writeCategory(cat); }
+}
+
+/* saveData: يحفظ في Firestore الحقيقي إذا كان متصلاً بنجاح، وإلا محلياً على هذا الجهاز فقط.
+   catId اختياري: إذا مُرّر، يحفظ فئة هذا القسم فقط (أسرع وأكثر أماناً من حيث الحجم). */
+async function saveData(data, catId){
+  if(db && firestoreFns && menuColRef){
+    try{
+      if(catId){
+        const catObj = data.find(c=>c.id===catId);
+        if(catObj) await writeCategory(catObj);
+      }else{
+        await writeAllCategories(data);
+      }
+      return;
+    }catch(err){
+      console.warn("تعذّر الحفظ في Firebase، سيتم الحفظ محلياً:", err);
+      showToast("⚠️ الصورة كبيرة جداً على قاعدة البيانات، جرّب صورة أصغر");
+    }
+  }
+  saveLocal(data);
+}
+
+let menuData = loadLocal();
+let activeCat = menuData[0].id;
+
+/* محاولة الاتصال بـ Firebase بشكل آمن تماماً — لا يمكن أن توقف الموقع مهما حصل */
+async function tryConnectFirebase(){
+  if(!FIREBASE_CONFIGURED) return;
+  try{
+    const [{ initializeApp }, fns] = await Promise.all([
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"),
+      import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js")
+    ]);
+    const app = initializeApp(firebaseConfig);
+    db = fns.getFirestore(app);
+    firestoreFns = fns;
+    menuColRef = fns.collection(db, "skyCaffeeMenu");
+
+    function mergeFromSnapshot(snap){
+      const byId = {};
+      snap.forEach(d=> byId[d.id] = d.data());
+      return defaultData.map(cat=>{
+        const remote = byId[cat.id];
+        return remote ? { id:cat.id, name: remote.name || cat.name, icon: remote.icon || cat.icon, items: remote.items || [] } : cat;
+      });
+    }
+
+    const snap = await fns.getDocs(menuColRef);
+    if(!snap.empty){
+      menuData = mergeFromSnapshot(snap);
+    }else{
+      await writeAllCategories(menuData);
+    }
+    if(!menuData.find(c=>c.id===activeCat)) activeCat = menuData[0].id;
+    renderAll();
+
+    fns.onSnapshot(menuColRef, (snap)=>{
+      menuData = mergeFromSnapshot(snap);
+      if(!menuData.find(c=>c.id===activeCat)) activeCat = menuData[0].id;
+      renderAll();
+      if(adminModal && adminModal.classList.contains("show")) renderAdminList();
+    });
+  }catch(err){
+    console.warn("تعذّر الاتصال بـ Firebase، الموقع يعمل بالتخزين المحلي:", err);
+    db = null; firestoreFns = null; menuColRef = null;
+  }
+}
+
+/* ============ RENDER MENU ============ */
+function formatPrice(p){
+  return Number(p).toLocaleString("en-US") + " ل.س";
+}
+
+function renderNav(){
+  const nav = document.getElementById("navScroll");
+  nav.innerHTML = "";
+  menuData.forEach(cat=>{
+    const btn = document.createElement("button");
+    btn.className = "nav-btn" + (cat.id===activeCat ? " active" : "");
+    btn.textContent = cat.icon + " " + cat.name;
+    btn.onclick = ()=>{ activeCat = cat.id; renderAll(); };
+    nav.appendChild(btn);
+  });
+}
+
+function renderSections(){
+  const container = document.getElementById("menuContainer");
+  container.innerHTML = "";
+  menuData.forEach(cat=>{
+    const section = document.createElement("div");
+    section.className = "section" + (cat.id===activeCat ? " active" : "");
+    section.id = "sec-"+cat.id;
+
+    const head = document.createElement("div");
+    head.className = "section-head";
+    head.innerHTML = `<h2>${cat.icon} ${cat.name}</h2>`;
+    section.appendChild(head);
+
+    const grid = document.createElement("div");
+    grid.className = "grid";
+    cat.items.forEach(it=>{
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <div class="img-wrap">
+          ${it.signature ? '<div class="badge-signature">SIGNATURE</div>' : ''}
+          <img src="${it.img}" alt="${it.name}" loading="lazy" onerror="this.src='https://loremflickr.com/400/300/luxury,cafe?lock=999'">
+          <div class="price-tag">${formatPrice(it.price)}</div>
+        </div>
+        <div class="card-body"><h3>${it.name}</h3></div>
+      `;
+      grid.appendChild(card);
+    });
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+function renderAll(){
+  renderNav();
+  renderSections();
+}
+
+try{
+  renderAll();
+}catch(e){
+  console.error("حدث خطأ أثناء عرض المنيو:", e);
+}
+tryConnectFirebase();
+
+/* ============ رفع وضغط الصور ============ */
+function resizeImageFile(file, maxWidth=480, quality=0.6){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = (e)=>{
+      const image = new Image();
+      image.onload = ()=>{
+        const scale = Math.min(1, maxWidth / image.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width * scale;
+        canvas.height = image.height * scale;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      };
+      image.onerror = reject;
+      image.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/* معاينة صورة الصنف الجديد فور اختيارها */
+document.getElementById("newImgFile").addEventListener("change", async (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImageFile(file);
+  const wrap = document.getElementById("newImgPreviewWrap");
+  const prev = document.getElementById("newImgPreview");
+  prev.src = dataUrl;
+  wrap.style.display = "block";
+});
+
+/* تغيير صورة صنف موجود مسبقاً */
+async function changeItemPhoto(catId, idx, inputEl){
+  const file = inputEl.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImageFile(file);
+  const catObj = menuData.find(c=>c.id===catId);
+  catObj.items[idx].img = dataUrl;
+  await saveData(menuData, catId);
+  renderAll();
+  renderAdminList();
+  showToast("✅ تم تحديث صورة الصنف");
+}
+window.changeItemPhoto = changeItemPhoto;
+
+/* ============ ADMIN ============ */
+const pwModal = document.getElementById("pwModal");
+const adminModal = document.getElementById("adminModal");
+
+document.getElementById("adminFab").onclick = ()=>{
+  document.getElementById("pwInput").value = "";
+  pwModal.classList.add("show");
+  setTimeout(()=>document.getElementById("pwInput").focus(),100);
+};
+
+function closeModal(id){
+  document.getElementById(id).classList.remove("show");
+}
+window.closeModal = closeModal;
+
+document.getElementById("pwInput").addEventListener("keydown", e=>{
+  if(e.key === "Enter") checkPassword();
+});
+
+function checkPassword(){
+  const val = document.getElementById("pwInput").value;
+  if(val === ADMIN_PASSWORD){
+    closeModal("pwModal");
+    openAdminPanel();
+  }else{
+    showToast("❌ كلمة السر غير صحيحة");
+  }
+}
+window.checkPassword = checkPassword;
+
+function openAdminPanel(){
+  const catSelect = document.getElementById("newCat");
+  catSelect.innerHTML = menuData.map(c=>`<option value="${c.id}">${c.icon} ${c.name}</option>`).join("");
+  renderAdminList();
+  const statusEl = document.getElementById("dbStatus");
+  statusEl.textContent = db
+    ? "🟢 متصل بقاعدة بيانات حقيقية — التعديلات تظهر فوراً لكل الزبائن على أي جهاز"
+    : (FIREBASE_CONFIGURED
+        ? "🟠 تعذّر الاتصال بـ Firebase (تحقق من الإعدادات) — يعمل الآن محلياً على هذا الجهاز فقط"
+        : "🟡 وضع محلي مؤقت (هذا الجهاز فقط) — اربط Firebase من أعلى الكود لجعل التعديلات تظهر لكل الزبائن");
+  adminModal.classList.add("show");
+}
+
+function renderAdminList(){
+  const list = document.getElementById("adminList");
+  list.innerHTML = "";
+  menuData.forEach(cat=>{
+    const title = document.createElement("div");
+    title.className = "admin-cat-title";
+    title.textContent = cat.icon + " " + cat.name;
+    list.appendChild(title);
+
+    cat.items.forEach((it, idx)=>{
+      const row = document.createElement("div");
+      row.className = "admin-item-row";
+      const fileId = `photoInput_${cat.id}_${idx}`;
+      row.innerHTML = `
+        <img src="${it.img}" alt="">
+        <div class="name">${it.name}</div>
+        <input type="number" value="${it.price}" data-cat="${cat.id}" data-idx="${idx}" class="price-edit">
+        <label style="cursor:pointer;" title="تغيير الصورة">
+          <input type="file" accept="image/*" id="${fileId}" style="display:none;" onchange="changeItemPhoto('${cat.id}', ${idx}, this)">
+          📷
+        </label>
+        <button class="del-btn" data-cat="${cat.id}" data-idx="${idx}">🗑</button>
+      `;
+      list.appendChild(row);
+    });
+  });
+
+  list.querySelectorAll(".price-edit").forEach(inp=>{
+    inp.addEventListener("change", async e=>{
+      const cat = e.target.dataset.cat;
+      const idx = e.target.dataset.idx;
+      const catObj = menuData.find(c=>c.id===cat);
+      catObj.items[idx].price = Number(e.target.value) || 0;
+      await saveData(menuData, cat);
+      renderAll();
+      showToast("✅ تم تحديث السعر");
+    });
+  });
+
+  list.querySelectorAll(".del-btn").forEach(btn=>{
+    btn.addEventListener("click", async e=>{
+      const cat = e.currentTarget.dataset.cat;
+      const idx = e.currentTarget.dataset.idx;
+      const catObj = menuData.find(c=>c.id===cat);
+      catObj.items.splice(idx,1);
+      await saveData(menuData, cat);
+      renderAll();
+      renderAdminList();
+      showToast("🗑 تم حذف الصنف");
+    });
+  });
+}
+
+async function addItem(){
+  const catId = document.getElementById("newCat").value;
+  const name = document.getElementById("newName").value.trim();
+  const price = Number(document.getElementById("newPrice").value);
+  const imgKey = document.getElementById("newImgKey").value.trim() || "cafe,drink";
+  const fileInput = document.getElementById("newImgFile");
+  const file = fileInput.files[0];
+
+  if(!name || !price){
+    showToast("⚠️ الرجاء تعبئة الاسم والسعر");
+    return;
+  }
+
+  let imgSrc;
+  if(file){
+    imgSrc = await resizeImageFile(file);
+  }else{
+    imgSrc = `https://loremflickr.com/400/300/${encodeURIComponent(imgKey)}?lock=${Date.now()}`;
+  }
+
+  const catObj = menuData.find(c=>c.id===catId);
+  catObj.items.push({ name, price, img: imgSrc });
+  await saveData(menuData, catId);
+  activeCat = catId;
+  renderAll();
+  renderAdminList();
+
+  document.getElementById("newName").value = "";
+  document.getElementById("newPrice").value = "";
+  document.getElementById("newImgKey").value = "";
+  fileInput.value = "";
+  document.getElementById("newImgPreviewWrap").style.display = "none";
+  showToast("✅ تم إضافة الصنف بنجاح");
+}
+window.addItem = addItem;
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* close modal on outside click */
+[pwModal, adminModal].forEach(m=>{
+  m.addEventListener("click", e=>{ if(e.target===m) m.classList.remove("show"); });
+});
+</script>
+</body>
+</html>
