@@ -282,6 +282,11 @@
     width:30px; height:30px; border-radius:8px; border:none;
     background:#a1402a; color:#fff; cursor:pointer; flex:0 0 auto; font-size:14px;
   }
+  .admin-item-row .price-save-btn{
+    width:30px; height:30px; border-radius:8px; border:none;
+    background:linear-gradient(160deg, var(--gold-bright), var(--gold-dark));
+    color:#221909; cursor:pointer; flex:0 0 auto; font-size:14px;
+  }
   .admin-cat-title{
     font-weight:900; color:var(--gold-dark); margin:18px 0 8px; font-size:15px;
     border-bottom:1px dashed var(--gold); padding-bottom:6px;
@@ -785,6 +790,7 @@ function renderAdminList(){
         <img src="${it.img}" alt="">
         <div class="name">${it.name}</div>
         <input type="number" value="${it.price}" data-cat="${cat.id}" data-idx="${idx}" class="price-edit">
+        <button class="price-save-btn" data-cat="${cat.id}" data-idx="${idx}" title="حفظ السعر">✏️</button>
         <label style="cursor:pointer;" title="تغيير الصورة">
           <input type="file" accept="image/*" id="${fileId}" style="display:none;" onchange="changeItemPhoto('${cat.id}', ${idx}, this)">
           📷
@@ -795,7 +801,30 @@ function renderAdminList(){
     });
   });
 
+  async function savePriceFor(row){
+    const inp = row.querySelector(".price-edit");
+    const cat = inp.dataset.cat;
+    const idx = inp.dataset.idx;
+    const catObj = menuData.find(c=>c.id===cat);
+    catObj.items[idx].price = Number(inp.value) || 0;
+    await saveData(menuData, cat);
+    renderAll();
+    showToast("✅ تم تحديث السعر");
+  }
+
+  list.querySelectorAll(".price-save-btn").forEach(btn=>{
+    btn.addEventListener("click", e=>{
+      savePriceFor(e.currentTarget.closest(".admin-item-row"));
+    });
+  });
+
   list.querySelectorAll(".price-edit").forEach(inp=>{
+    inp.addEventListener("keydown", e=>{
+      if(e.key === "Enter"){
+        e.preventDefault();
+        savePriceFor(e.target.closest(".admin-item-row"));
+      }
+    });
     inp.addEventListener("change", async e=>{
       const cat = e.target.dataset.cat;
       const idx = e.target.dataset.idx;
