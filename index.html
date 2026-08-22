@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SKY CAFFEE | المنيو</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://www.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://firestore.googleapis.com" crossorigin>
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js">
+<link rel="modulepreload" href="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js">
 <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Marhey:wght@400;500;600;700&family=Tajawal:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -594,79 +598,69 @@ async function tryConnectFirebase(){
     firestoreFns = fns;
     menuColRef = fns.collection(db, "skyCaffeeMenu");
 
-    function mergeFromSnapshot(snap){
-      const byId = {};
-      snap.forEach(d=> byId[d.id] = d.data());
+    function mergeFromSnapshot(byId){
       return defaultData.map(cat=>{
         const remote = byId[cat.id];
         return remote ? { id:cat.id, name: remote.name || cat.name, icon: remote.icon || cat.icon, items: remote.items || [] } : cat;
       });
     }
 
-    /* استرجاع تلقائي لمرة واحدة: لو في بيانات حقيقية بالنظام القديم ولسا ما تم نقلها، ننقلها الآن قبل أي شيء */
-    async function recoverLegacyDataIfNeeded(){
-      try{
-        const markerRef = fns.doc(menuColRef, "_migrated");
-        const markerSnap = await fns.getDoc(markerRef);
-        if(markerSnap.exists()) return;
-        const legacyRef = fns.doc(db, "skyCaffee", "menu");
-        const legacySnap = await fns.getDoc(legacyRef);
-        if(legacySnap.exists() && legacySnap.data() && legacySnap.data().data){
-          const legacyData = JSON.parse(legacySnap.data().data);
-          if(Array.isArray(legacyData) && legacyData.length){
-            for(const cat of legacyData){
-              await fns.setDoc(fns.doc(menuColRef, cat.id), {
-                name: cat.name, icon: cat.icon, items: cat.items || [], updatedAt: Date.now()
-              });
-            }
-          }
-        }
-        await fns.setDoc(markerRef, { done:true, at: Date.now() });
-      }catch(e){
-        console.warn("تعذّر التحقق من البيانات القديمة:", e);
-      }
-    }
-    await recoverLegacyDataIfNeeded();
-
-    /* تنظيف تلقائي دائم: أي صنف لسا فيه صورة قديمة من الخدمة الخارجية (loremflickr) يُستبدل بصورة "لا توجد صورة بعد" ويُحفظ التصحيح فوراً في القاعدة */
-    async function cleanupOldExternalImages(){
-      try{
-        const snap = await fns.getDocs(menuColRef);
-        for(const d of snap.docs){
-          if(d.id === "_migrated") continue;
-          const data = d.data();
-          if(!data.items) continue;
-          let changed = false;
-          const items = data.items.map(it=>{
-            if(typeof it.img === "string" && it.img.includes("loremflickr.com")){
-              changed = true;
-              return { ...it, img: NO_IMG_PLACEHOLDER };
-            }
-            return it;
-          });
-          if(changed){
-            await fns.setDoc(fns.doc(menuColRef, d.id), {
-              name: data.name, icon: data.icon, items, updatedAt: Date.now()
-            });
-          }
-        }
-      }catch(e){
-        console.warn("تعذّر تنظيف الصور القديمة:", e);
-      }
-    }
-    await cleanupOldExternalImages();
-
+    /* رحلة واحدة فقط لقاعدة البيانات بدل عدة رحلات متتالية — هذا هو سبب التأخير سابقاً */
     const snap = await fns.getDocs(menuColRef);
-    if(!snap.empty){
-      menuData = mergeFromSnapshot(snap);
-    }else{
+    const byId = {};
+    snap.forEach(d=>{ if(d.id !== "_migrated") byId[d.id] = d.data(); });
+    const alreadyMigrated = snap.docs.some(d=>d.id === "_migrated");
+
+    if(snap.empty){
       await writeAllCategories(menuData);
+    }else{
+      menuData = mergeFromSnapshot(byId);
+
+      /* استرجاع تلقائي لمرة واحدة فقط: لو ما تم النقل من النظام القديم بعد */
+      if(!alreadyMigrated){
+        try{
+          const legacySnap = await fns.getDoc(fns.doc(db, "skyCaffee", "menu"));
+          if(legacySnap.exists() && legacySnap.data() && legacySnap.data().data){
+            const legacyData = JSON.parse(legacySnap.data().data);
+            if(Array.isArray(legacyData) && legacyData.length){
+              await Promise.all(legacyData.map(cat=>
+                fns.setDoc(fns.doc(menuColRef, cat.id), { name: cat.name, icon: cat.icon, items: cat.items || [], updatedAt: Date.now() })
+              ));
+              menuData = legacyData;
+            }
+          }
+          await fns.setDoc(fns.doc(menuColRef, "_migrated"), { done:true, at: Date.now() });
+        }catch(e){ console.warn("تعذّر التحقق من البيانات القديمة:", e); }
+      }
+
+      /* تنظيف فوري (بدون رحلة إضافية للقاعدة): أي صورة قديمة متبقية من الخدمة الخارجية تُستبدل بصورة "لا توجد صورة بعد" */
+      const catsToFix = [];
+      menuData = menuData.map(cat=>{
+        let changed = false;
+        const items = (cat.items||[]).map(it=>{
+          if(typeof it.img === "string" && it.img.includes("loremflickr.com")){
+            changed = true;
+            return { ...it, img: NO_IMG_PLACEHOLDER };
+          }
+          return it;
+        });
+        if(changed) catsToFix.push({ ...cat, items });
+        return changed ? { ...cat, items } : cat;
+      });
+      if(catsToFix.length){
+        Promise.all(catsToFix.map(cat=>
+          fns.setDoc(fns.doc(menuColRef, cat.id), { name: cat.name, icon: cat.icon, items: cat.items, updatedAt: Date.now() })
+        )).catch(e=>console.warn("تعذّر حفظ تنظيف الصور:", e));
+      }
     }
+
     if(!menuData.find(c=>c.id===activeCat)) activeCat = menuData[0].id;
     renderAll();
 
     fns.onSnapshot(menuColRef, (snap)=>{
-      menuData = mergeFromSnapshot(snap);
+      const byId2 = {};
+      snap.forEach(d=>{ if(d.id !== "_migrated") byId2[d.id] = d.data(); });
+      menuData = mergeFromSnapshot(byId2);
       if(!menuData.find(c=>c.id===activeCat)) activeCat = menuData[0].id;
       renderAll();
       if(adminModal && adminModal.classList.contains("show")) renderAdminList();
