@@ -433,11 +433,14 @@ let firestoreFns = null;
 let menuColRef = null;
 
 /* ============ DATA ============ */
-const STORAGE_KEY = "skyCaffeeMenuV1";
+const STORAGE_KEY = "skyCaffeeMenuV2";
 const ADMIN_PASSWORD = "123456";
 
+const NO_IMG_PLACEHOLDER = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiB2aWV3Qm94PSIwIDAgNDAwIDMwMCI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjZGNlOGY2Ii8+CjxyZWN0IHg9IjEiIHk9IjEiIHdpZHRoPSIzOTgiIGhlaWdodD0iMjk4IiBmaWxsPSJub25lIiBzdHJva2U9IiMzZjlkYmYiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWRhc2hhcnJheT0iOCA2Ii8+Cjx0ZXh0IHg9IjIwMCIgeT0iMTQwIiBmb250LWZhbWlseT0iVGFob21hLCBBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSI0NiIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZmlsbD0iIzFmNWI3MyI+U0tZPC90ZXh0Pgo8dGV4dCB4PSIyMDAiIHk9IjE4NSIgZm9udC1mYW1pbHk9IlRhaG9tYSwgQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMjAiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiMzYTU2NzAiPtmE2Kcg2KrZiNis2K8g2LXZiNix2Kkg2KjYudivPC90ZXh0Pgo8L3N2Zz4=";
+window.NO_IMG_PLACEHOLDER = NO_IMG_PLACEHOLDER;
+
 function img(keyword, lock){
-  return `https://loremflickr.com/400/300/${encodeURIComponent(keyword)}?lock=${lock}`;
+  return NO_IMG_PLACEHOLDER;
 }
 
 const defaultData = [
@@ -576,6 +579,7 @@ async function saveData(data, catId){
 
 let menuData = loadLocal();
 let activeCat = menuData[0].id;
+let firebaseRetryCount = 0;
 
 /* محاولة الاتصال بـ Firebase بشكل آمن تماماً — لا يمكن أن توقف الموقع مهما حصل */
 async function tryConnectFirebase(){
@@ -624,6 +628,34 @@ async function tryConnectFirebase(){
     }
     await recoverLegacyDataIfNeeded();
 
+    /* تنظيف تلقائي دائم: أي صنف لسا فيه صورة قديمة من الخدمة الخارجية (loremflickr) يُستبدل بصورة "لا توجد صورة بعد" ويُحفظ التصحيح فوراً في القاعدة */
+    async function cleanupOldExternalImages(){
+      try{
+        const snap = await fns.getDocs(menuColRef);
+        for(const d of snap.docs){
+          if(d.id === "_migrated") continue;
+          const data = d.data();
+          if(!data.items) continue;
+          let changed = false;
+          const items = data.items.map(it=>{
+            if(typeof it.img === "string" && it.img.includes("loremflickr.com")){
+              changed = true;
+              return { ...it, img: NO_IMG_PLACEHOLDER };
+            }
+            return it;
+          });
+          if(changed){
+            await fns.setDoc(fns.doc(menuColRef, d.id), {
+              name: data.name, icon: data.icon, items, updatedAt: Date.now()
+            });
+          }
+        }
+      }catch(e){
+        console.warn("تعذّر تنظيف الصور القديمة:", e);
+      }
+    }
+    await cleanupOldExternalImages();
+
     const snap = await fns.getDocs(menuColRef);
     if(!snap.empty){
       menuData = mergeFromSnapshot(snap);
@@ -640,8 +672,12 @@ async function tryConnectFirebase(){
       if(adminModal && adminModal.classList.contains("show")) renderAdminList();
     });
   }catch(err){
-    console.warn("تعذّر الاتصال بـ Firebase، الموقع يعمل بالتخزين المحلي:", err);
+    console.warn("تعذّر الاتصال بـ Firebase، سيُعاد المحاولة تلقائياً:", err);
     db = null; firestoreFns = null; menuColRef = null;
+    if(firebaseRetryCount < 3){
+      firebaseRetryCount++;
+      setTimeout(tryConnectFirebase, 2000 * firebaseRetryCount);
+    }
   }
 }
 
@@ -683,7 +719,7 @@ function renderSections(){
       card.innerHTML = `
         <div class="img-wrap">
           ${it.signature ? '<div class="badge-signature">SIGNATURE</div>' : ''}
-          <img src="${it.img}" alt="${it.name}" loading="lazy" onerror="this.src='https://loremflickr.com/400/300/luxury,cafe?lock=999'">
+          <img src="${it.img}" alt="${it.name}" loading="lazy" onerror="this.src=window.NO_IMG_PLACEHOLDER">
           <div class="price-tag">${formatPrice(it.price)}</div>
         </div>
         <div class="card-body"><h3>${it.name}</h3></div>
@@ -892,7 +928,7 @@ async function addItem(){
   if(file){
     imgSrc = await resizeImageFile(file);
   }else{
-    imgSrc = `https://loremflickr.com/400/300/${encodeURIComponent(imgKey)}?lock=${Date.now()}`;
+    imgSrc = NO_IMG_PLACEHOLDER;
   }
 
   const catObj = menuData.find(c=>c.id===catId);
